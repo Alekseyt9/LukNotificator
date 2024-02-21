@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.Extensions.DependencyInjection;
 using TelegramBotHelper.Commands;
+using TelegramBotHelper.Services;
 
 namespace TelegramBotHelper
 {
@@ -9,7 +10,8 @@ namespace TelegramBotHelper
         public static IServiceCollection RegisterTelegramBotHelper(this IServiceCollection services)
         {
             services
-                .AddTransient<ITelegramCommandParser, TelegramCommandParser>();
+                .AddTransient<ITelegramCommandParser, TelegramCommandParser>()
+                .AddTransient<ITelegramBot, TelegramBot>();
             return services;
         }
     }
