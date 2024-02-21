@@ -1,13 +1,19 @@
 ﻿
+using LukNotificator.Services;
 using MediatR;
+using TelegramBotHelper.Services;
 
 namespace LukNotificator.Commands.Handlers
 {
-    internal class AddCommandHandler : IRequestHandler<AddCommand>
+    internal class AddCommandHandler(IRepository repository, ITelegramBot telegramBot) : IRequestHandler<AddCommand>
     {
-        public Task Handle(AddCommand request, CancellationToken cancellationToken)
+        public async Task Handle(AddCommand request, CancellationToken cancellationToken)
         {
-            return Task.CompletedTask;
+            var user = await repository.GetOrCreateUser(request.Context.TelegramChannelId);
+            await repository.AddCurrency(user, request.Code, request.Price);
+            await telegramBot.SendMessage(request.Context.TelegramChannelId,
+                $"currency added {request.Code} {request.Price}");
         }
+
     }
 }

@@ -14,6 +14,7 @@ namespace TelegramBotHelper
                 .RegisterTelegramBotHelper()
                 .AddTransient<INotificationTaskManager, NotificationTaskManager>()
                 .AddTransient<IRepository, Repository>()
+                .AddTransient<IExchangeService, ExchangeService>()
                 ;
 
             return services;

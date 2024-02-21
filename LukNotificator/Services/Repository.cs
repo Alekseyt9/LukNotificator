@@ -3,6 +3,7 @@ using Dapper;
 using LukNotificator.Entity;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
+using System.Threading.Channels;
 using User = LukNotificator.Entity.User;
 
 namespace LukNotificator.Services
@@ -30,8 +31,14 @@ namespace LukNotificator.Services
         {
             await using var con = new NpgsqlConnection(_conString);
             con.Open();
-            var cur = new Currency() { Code = code, UserId = user.Id, Price = value };
-            await con.ExecuteAsync("insert into public.\"currency\"(code, userid, price) values(@code, @userid, @price)", cur);
+            var cur = new Currency()
+            {
+                Code = code, 
+                UserId = user.Id, 
+                Price = value,
+                Id = Guid.NewGuid()
+            };
+            await con.ExecuteAsync("insert into public.\"currency\"(id, code, userid, price) values(@id, @code, @userid, @price)", cur);
             return cur;
         }
 
@@ -59,6 +66,13 @@ namespace LukNotificator.Services
         public Task<User> GetUser(Guid id)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<User> GetUser(long chanId)
+        {
+            await using var con = new NpgsqlConnection(_conString);
+            con.Open();
+            return await con.QueryFirstAsync<User>("select * from public.\"user\" where channelid = @channelid", new { channelid = chanId });
         }
 
         public async Task<IEnumerable<User>> GetUsers()

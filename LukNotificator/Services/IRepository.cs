@@ -17,6 +17,8 @@ namespace LukNotificator.Services
 
         Task<User> GetUser(Guid id);
 
+        Task<User> GetUser(long chanId);
+
         Task<IEnumerable<User>> GetUsers();
 
     }

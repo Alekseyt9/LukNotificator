@@ -4,6 +4,8 @@ namespace LukNotificator.Entity
 {
     internal class Currency
     {
+        public Guid Id { get; set; }
+
         public string Code { get; set; }
 
         public double Price { get; set; }

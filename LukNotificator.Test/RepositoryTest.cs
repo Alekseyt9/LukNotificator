@@ -7,8 +7,8 @@ namespace LukNotificator.Test
 {
     public class RepositoryTest
     {
-        IConfiguration _configuration;
-        IRepository _repository;
+        readonly IConfiguration _configuration;
+        readonly IRepository _repository;
 
         public RepositoryTest()
         {
@@ -17,7 +17,7 @@ namespace LukNotificator.Test
                 .AddJsonFile("secrets.json", false, true);
 
             _configuration = builder.Build();
-            _configuration["pgconnstr"] = $"Server=37.77.105.224;Port=5432;Database=lukbot;User Id=alex;Password={_configuration["pgpass"]};";
+            _configuration["pgconnstr"] = $"Server=37.77.105.224; Port=5432; Database=lukbot; User Id=alex; Password={_configuration["pgpass"]};";
             _repository = new Repository(_configuration);
         }
 
