@@ -20,7 +20,7 @@ namespace LukNotificator.Commands.Handlers
             foreach (var cur in curs)
             {
                 var p = (pairs[cur.Code] - cur.Price) / cur.Price;
-                sb.AppendLine($"{cur.Code}: {cur.Price} => {pairs[cur.Code]} ({p.ToString("f3")})");
+                sb.AppendLine($"{cur.Code}: {cur.Price} => {pairs[cur.Code]} ({(p * 100).ToString("f3")}%)");
             }
 
             await telegramBot.SendMessage(request.Context.TelegramChannelId, sb.ToString());

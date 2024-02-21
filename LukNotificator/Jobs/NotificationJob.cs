@@ -6,8 +6,7 @@ using TelegramBotHelper.Services;
 
 namespace LukNotificator.Jobs
 {
-    internal class NotificationJob(IRepository repository, IExchangeService exchangeService, ITelegramBot telegramBot)
-        : IJob
+    internal class NotificationJob(IRepository repository, IExchangeService exchangeService, ITelegramBot telegramBot): IJob
     {
         public async Task Execute(IJobExecutionContext context)
         {
@@ -22,10 +21,10 @@ namespace LukNotificator.Jobs
                 var sb = new StringBuilder();
                 foreach (var cur in group)
                 {
-                    var p = (cur.Price - priceDict[cur.Code]) / cur.Price;
+                    var p = (priceDict[cur.Code] - cur.Price) / cur.Price;
                     if (p > 0.03)
                     {
-                        sb.AppendLine($"{cur.Code}: {cur.Price} => {priceDict[cur.Code]} raised on 3% ");
+                        sb.AppendLine($"signal <{cur.Code}>: {cur.Price} => {priceDict[cur.Code]} raised on {(p * 100).ToString("f3")}% ");
                         await repository.UpdateCurrency(cur.Id, true);
                     }
                 }

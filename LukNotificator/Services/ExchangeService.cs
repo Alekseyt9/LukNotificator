@@ -20,7 +20,11 @@ namespace LukNotificator.Services
 
             foreach (var ticker in tickers)
             {
-                var s = ticker["symbol"].ToString().Split('-')[0];
+                var arr = ticker["symbol"].ToString().Split('-');
+                if (arr[1] != "USDT")
+                    continue;
+                var s = arr[0];
+
                 if (pairs.ContainsKey(s))
                 {
                     var lastPrice = ticker["last"].ToObject<double>();
