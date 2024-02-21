@@ -24,7 +24,7 @@ namespace LukNotificator.Jobs
                     var p = (priceDict[cur.Code] - cur.Price) / cur.Price;
                     if (p > 0.03)
                     {
-                        sb.AppendLine($"signal <{cur.Code}>: {cur.Price} => {priceDict[cur.Code]} raised on {(p * 100).ToString("f3")}% ");
+                        sb.AppendLine($"signal {cur.Code}: {cur.Price} => {priceDict[cur.Code]} raised on {(p * 100).ToString("f3")}% ");
                         await repository.UpdateCurrency(cur.Id, true);
                     }
                 }
