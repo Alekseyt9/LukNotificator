@@ -16,7 +16,7 @@ namespace LukNotificator.Jobs
             var priceDict = await exchangeService.GetUsdtPairs(filtCurs.Select(x => x.Code).ToArray());
             var userMap = (await repository.GetUsers()).ToDictionary(x => x.Id, y => y.ChannelId);
 
-            var uGroups = curs.GroupBy(x => x.UserId);
+            var uGroups = curs.Where(x => !x.IsTriggered).GroupBy(x => x.UserId);
             foreach (var group in uGroups)
             {
                 var sb = new StringBuilder();
@@ -26,6 +26,7 @@ namespace LukNotificator.Jobs
                     if (p > 0.03)
                     {
                         sb.AppendLine($"{cur.Code}: {cur.Price} => {priceDict[cur.Code]} raised on 3% ");
+                        await repository.UpdateCurrency(cur.Id, true);
                     }
                 }
 

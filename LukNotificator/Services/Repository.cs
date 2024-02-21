@@ -3,7 +3,6 @@ using Dapper;
 using LukNotificator.Entity;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
-using System.Threading.Channels;
 using User = LukNotificator.Entity.User;
 
 namespace LukNotificator.Services
@@ -82,5 +81,14 @@ namespace LukNotificator.Services
             con.Open();
             return await con.QueryAsync<User>("select * from public.\"user\"");
         }
+
+        public async Task UpdateCurrency(Guid curId, bool isTriggered)
+        {
+            await using var con = new NpgsqlConnection(_conString);
+            con.Open();
+            await con.ExecuteAsync("update public.\"currency\" set istriggered = @istriggered where id = @id",
+                new { id = curId, istriggered = isTriggered });
+        }
+
     }
 }

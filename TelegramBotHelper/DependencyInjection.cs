@@ -10,7 +10,7 @@ namespace TelegramBotHelper
         public static IServiceCollection RegisterTelegramBotHelper(this IServiceCollection services)
         {
             services
-                .AddTransient<ITelegramCommandParser, TelegramCommandParser>()
+                .AddSingleton<ITelegramCommandParser, TelegramCommandParser>()
                 .AddSingleton<ITelegramBot, TelegramBot>();
             return services;
         }

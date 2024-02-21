@@ -10,11 +10,11 @@ namespace TelegramBotHelper
         public static IServiceCollection RegisterMain(this IServiceCollection services)
         {
             services
-                .AddTransient<ITelegramCommandFactory, TelegramCommandFactory>()
+                .AddSingleton<ITelegramCommandFactory, TelegramCommandFactory>()
                 .RegisterTelegramBotHelper()
-                .AddTransient<INotificationTaskManager, NotificationTaskManager>()
-                .AddTransient<IRepository, Repository>()
-                .AddTransient<IExchangeService, ExchangeService>()
+                .AddSingleton<INotificationTaskManager, NotificationTaskManager>()
+                .AddSingleton<IRepository, Repository>()
+                .AddSingleton<IExchangeService, ExchangeService>()
                 ;
 
             return services;

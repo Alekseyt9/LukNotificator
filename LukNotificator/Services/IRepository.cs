@@ -21,5 +21,6 @@ namespace LukNotificator.Services
 
         Task<IEnumerable<User>> GetUsers();
 
+        Task UpdateCurrency(Guid curId, bool isTriggered);
     }
 }

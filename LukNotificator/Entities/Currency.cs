@@ -11,5 +11,7 @@ namespace LukNotificator.Entity
         public double Price { get; set; }
 
         public Guid UserId { get; set; }
+
+        public bool IsTriggered { get; set; }
     }
 }
