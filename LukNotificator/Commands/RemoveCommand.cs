@@ -1,11 +1,12 @@
 ﻿
+using MediatR;
 using TelegramBotHelper.Commands;
 
 namespace LukNotificator.Commands
 {
-    internal class DelCommand : TelegramCommandBase
+    internal class RemoveCommand : TelegramCommandBase, IRequest
     {
-        public DelCommand(TelegramBotContext context) : base(context)
+        public RemoveCommand(TelegramBotContext context) : base(context)
         {
 
         }

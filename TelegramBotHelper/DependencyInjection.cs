@@ -11,7 +11,7 @@ namespace TelegramBotHelper
         {
             services
                 .AddTransient<ITelegramCommandParser, TelegramCommandParser>()
-                .AddTransient<ITelegramBot, TelegramBot>();
+                .AddSingleton<ITelegramBot, TelegramBot>();
             return services;
         }
     }

@@ -23,7 +23,7 @@ namespace LukNotificator.Services
                     {
                         throw new ArgumentException($"Error. Command {cmdInfo.Code} must contain 1 parameters");
                     }
-                    return new DelCommand(ctx)
+                    return new RemoveCommand(ctx)
                     {
                         Code = cmdInfo.Params.FirstOrDefault()
                     };

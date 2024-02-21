@@ -46,7 +46,8 @@ namespace LukNotificator.Services
         {
             await using var con = new NpgsqlConnection(_conString);
             con.Open();
-            await con.ExecuteAsync("delete from public.\"currency\" where userid = @userid and code = @code");
+            await con.ExecuteAsync("delete from public.\"currency\" where userid = @userid and code = @code",
+                new { userid = user.Id, code = code });
         }
 
         public async Task<IEnumerable<Currency>> GetCurrencies(User user)
