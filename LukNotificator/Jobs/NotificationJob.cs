@@ -1,6 +1,7 @@
 ﻿
 using System.Text;
 using LukNotificator.Services;
+using LukNotificator.Services.Exchange;
 using Quartz;
 using TelegramBotHelper.Services;
 

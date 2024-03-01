@@ -2,6 +2,7 @@
 using System.Text;
 using LukNotificator.Entity;
 using LukNotificator.Services;
+using LukNotificator.Services.Exchange;
 using MediatR;
 using TelegramBotHelper.Services;
 
