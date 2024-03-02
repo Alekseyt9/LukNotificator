@@ -6,13 +6,12 @@ using TelegramBotHelper.Services;
 
 namespace LukNotificator.Jobs
 {
-    internal class SellJob(IUserRepository userRep, IExchangeService exchangeService, ITelegramBot telegramBot) 
+    internal class SellJob(IUserRepository userRep, IExchangeService exchangeService, ITelegramBot telegramBot, ISellJobProcessor sellJobProcessor) 
         : IJob
     {
         public async Task Execute(IJobExecutionContext context)
         {
-            var curList = await exchangeService.GetOwnCurrencies();
-
+            await sellJobProcessor.Execute();
         }
 
     }

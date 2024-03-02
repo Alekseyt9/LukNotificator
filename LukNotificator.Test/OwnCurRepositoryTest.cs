@@ -34,6 +34,9 @@ namespace LukNotificator.Test
 
             await _curRep.SaveProps(cur.Id, cur.Props);
             var cur1 = await _curRep.GetOrCreate(user.Id, "XRP");
+            var list = await _curRep.GetAll(user.Id);
+            await _curRep.RemoveCurrency(cur1.Id);
+            var list2 = await _curRep.GetAll(user.Id);
         }
 
     }
