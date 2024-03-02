@@ -13,10 +13,10 @@ namespace LukNotificator.Jobs
     {
         public async Task Execute(IJobExecutionContext context)
         {
-            var curs = await curRep.GetCurrencies();
+            var curs = await curRep.GetAll();
             var filtCurs = curs.DistinctBy(x => x.Code);
             var priceDict = await exchangeService.GetUsdtPairs(filtCurs.Select(x => x.Code).ToArray());
-            var userMap = (await userRep.GetUsers()).ToDictionary(x => x.Id, y => y.ChannelId);
+            var userMap = (await userRep.GetAll()).ToDictionary(x => x.Id, y => y.ChannelId);
 
             var uGroups = curs.Where(x => !x.IsTriggered).GroupBy(x => x.UserId);
             foreach (var group in uGroups)
@@ -28,7 +28,7 @@ namespace LukNotificator.Jobs
                     if (p > 0.03)
                     {
                         sb.AppendLine($"signal {cur.Code}: {cur.Price} => {priceDict[cur.Code]} raised on {(p * 100).ToString("f3")}% ");
-                        await curRep.UpdateCurrency(cur.Id, true);
+                        await curRep.Update(cur.Id, true);
                     }
                 }
 

@@ -20,8 +20,8 @@ namespace LukNotificator.Commands.Handlers
 
         public async Task Handle(ListCommand request, CancellationToken cancellationToken)
         {
-            var user = await userRep.GetUser(request.Context.TelegramChannelId);
-            var curs = await curRep.GetCurrencies(user);
+            var user = await userRep.Get(request.Context.TelegramChannelId);
+            var curs = await curRep.GetAll(user);
             var sb = new StringBuilder();
 
             var curArr = curs.Select(c => c.Code).ToArray();

@@ -5,12 +5,12 @@ using Xunit;
 
 namespace LukNotificator.Test
 {
-    public class RepositoryTest
+    public class UserRepositoryTest
     {
-        readonly IConfiguration _configuration;
+        private readonly IConfiguration _configuration;
         private readonly IUserRepository _userRep;
 
-        public RepositoryTest()
+        public UserRepositoryTest()
         {
             var builder = new ConfigurationBuilder()
                 .AddJsonFile("secrets.json", false, true);
@@ -23,14 +23,14 @@ namespace LukNotificator.Test
         [Fact]
         public async Task Test1()
         {
-            var users = await _userRep.GetUsers();
+            var users = await _userRep.GetAll();
         }
 
         [Fact]
         public async Task Test2()
         {
-            var user = await _userRep.GetOrCreateUser(1234);
-            var users = await _userRep.GetUsers();
+            var user = await _userRep.GetOrCreate(1234);
+            var users = await _userRep.GetAll();
         }
 
     }

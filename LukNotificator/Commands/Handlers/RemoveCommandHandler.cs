@@ -10,8 +10,8 @@ namespace LukNotificator.Commands.Handlers
     {
         public async Task Handle(RemoveCommand request, CancellationToken cancellationToken)
         {
-            var user = await userRep.GetOrCreateUser(request.Context.TelegramChannelId);
-            await curRep.RemoveCurrency(user, request.Code);
+            var user = await userRep.GetOrCreate(request.Context.TelegramChannelId);
+            await curRep.Remove(user, request.Code);
             await telegramBot.SendMessage(request.Context.TelegramChannelId,
                 $"currency removed {request.Code}");
         }

@@ -1,18 +1,18 @@
-﻿using LukNotificator.Entity;
-
+﻿
+using LukNotificator.Entity;
 
 namespace LukNotificator.Services
 {
     public interface ICurrencyRepository
     {
-        Task<Currency> AddCurrency(User user, string code, double value);
+        Task<Currency> Add(User user, string code, double value);
 
-        Task RemoveCurrency(User user, string code);
+        Task Remove(User user, string code);
 
-        Task<IEnumerable<Currency>> GetCurrencies(User user);
+        Task<IEnumerable<Currency>> GetAll(User user);
 
-        Task<IEnumerable<Currency>> GetCurrencies();
+        Task<IEnumerable<Currency>> GetAll();
 
-        Task UpdateCurrency(Guid curId, bool isTriggered);
+        Task Update(Guid curId, bool isTriggered);
     }
 }

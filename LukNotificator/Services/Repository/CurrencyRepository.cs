@@ -9,7 +9,7 @@ namespace LukNotificator.Services
     {
         private readonly string? _conString = conf["pgconnstr"];
 
-        public async Task<Currency> AddCurrency(User user, string code, double value)
+        public async Task<Currency> Add(User user, string code, double value)
         {
             await using var con = new NpgsqlConnection(_conString);
             con.Open();
@@ -24,7 +24,7 @@ namespace LukNotificator.Services
             return cur;
         }
 
-        public async Task RemoveCurrency(User user, string code)
+        public async Task Remove(User user, string code)
         {
             await using var con = new NpgsqlConnection(_conString);
             con.Open();
@@ -32,21 +32,21 @@ namespace LukNotificator.Services
                 new { userid = user.Id, code = code });
         }
 
-        public async Task<IEnumerable<Currency>> GetCurrencies(User user)
+        public async Task<IEnumerable<Currency>> GetAll(User user)
         {
             await using var con = new NpgsqlConnection(_conString);
             con.Open();
             return await con.QueryAsync<Currency>("select * from public.\"currency\" where userid = @id", new { id = user.Id });
         }
 
-        public async Task<IEnumerable<Currency>> GetCurrencies()
+        public async Task<IEnumerable<Currency>> GetAll()
         {
             await using var con = new NpgsqlConnection(_conString);
             con.Open();
             return await con.QueryAsync<Currency>("select * from public.\"currency\"");
         }
 
-        public async Task UpdateCurrency(Guid curId, bool isTriggered)
+        public async Task Update(Guid curId, bool isTriggered)
         {
             await using var con = new NpgsqlConnection(_conString);
             con.Open();

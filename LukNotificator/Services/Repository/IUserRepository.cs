@@ -5,12 +5,12 @@ namespace LukNotificator.Services
 {
     internal interface IUserRepository
     {
-        Task<User> GetUser(Guid id);
+        Task<User> Get(Guid id);
 
-        Task<User> GetUser(long chanId);
+        Task<User> Get(long chanId);
 
-        Task<IEnumerable<User>> GetUsers();
+        Task<IEnumerable<User>> GetAll();
 
-        Task<User> GetOrCreateUser(long channelId);
+        Task<User> GetOrCreate(long channelId);
     }
 }

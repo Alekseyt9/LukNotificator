@@ -1,6 +1,6 @@
 ﻿namespace LukNotificator.Entities
 {
-    internal class OwnCurrency
+    public class OwnCurrency
     {
         public Guid Id { get; set; }
 

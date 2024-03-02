@@ -10,7 +10,7 @@ namespace LukNotificator.Services
     {
         private readonly string? _conString = conf["pgconnstr"];
 
-        public async Task<User> GetOrCreateUser(long channelId)
+        public async Task<User> GetOrCreate(long channelId)
         {
             await using var con = new NpgsqlConnection(_conString);
             con.Open();
@@ -25,19 +25,19 @@ namespace LukNotificator.Services
             return user;
         }
 
-        public Task<User> GetUser(Guid id)
+        public Task<User> Get(Guid id)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<User> GetUser(long chanId)
+        public async Task<User> Get(long chanId)
         {
             await using var con = new NpgsqlConnection(_conString);
             con.Open();
             return await con.QueryFirstAsync<User>("select * from public.\"user\" where channelid = @channelid", new { channelid = chanId });
         }
 
-        public async Task<IEnumerable<User>> GetUsers()
+        public async Task<IEnumerable<User>> GetAll()
         {
             await using var con = new NpgsqlConnection(_conString);
             con.Open();
