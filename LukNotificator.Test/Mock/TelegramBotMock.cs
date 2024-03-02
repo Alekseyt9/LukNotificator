@@ -9,7 +9,7 @@ namespace LukNotificator.Test.Mock
 
         public Task SendMessage(long channelId, string msg)
         {
-            
+            return Task.CompletedTask;
         }
 
     }

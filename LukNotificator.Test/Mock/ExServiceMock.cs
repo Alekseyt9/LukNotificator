@@ -24,5 +24,11 @@ namespace LukNotificator.Test.Mock
         {
             throw new NotImplementedException();
         }
+
+        public void SetTest(string code, double val)
+        {
+            
+        }
+
     }
 }
