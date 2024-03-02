@@ -6,7 +6,9 @@
 
         Task<IEnumerable<ExCurInfo>> GetOwnCurrencies();
 
-        Task Sell(string code, double value);
+        Task<bool> Sell(string code, double value);
+
+        Task<bool> Buy(string code, double value);
 
     }
 }

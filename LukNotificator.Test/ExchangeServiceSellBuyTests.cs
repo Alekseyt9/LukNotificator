@@ -1,15 +1,14 @@
-﻿
-using LukNotificator.Services.Exchange;
+﻿using LukNotificator.Services.Exchange;
 using Microsoft.Extensions.Configuration;
 using Xunit;
 
 namespace LukNotificator.Test
 {
-    public class ExchangeServiceTests
+    public class ExchangeServiceSellBuyTests
     {
         private IConfiguration _configuration { get; set; }
 
-        public ExchangeServiceTests()
+        public ExchangeServiceSellBuyTests()
         {
             var builder = new ConfigurationBuilder().AddJsonFile("secrets.json");
             _configuration = builder.Build();
@@ -19,14 +18,14 @@ namespace LukNotificator.Test
         public async Task Test1()
         {
             var exServ = new ExchangeService(_configuration);
-            var res = await exServ.GetUsdtPairs(new string[] { "PENDLE", "AKT" });
+            var res = await exServ.Buy("XRP", 0.5);
         }
 
         [Fact]
         public async Task Test2()
         {
             var exServ = new ExchangeService(_configuration);
-            var res = await exServ.GetOwnCurrencies();
+            var res = await exServ.Sell("XRP", 0.792);
         }
 
     }

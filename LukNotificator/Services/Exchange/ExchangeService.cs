@@ -7,15 +7,10 @@ using Newtonsoft.Json;
 
 namespace LukNotificator.Services.Exchange
 {
-    internal class ExchangeService : IExchangeService
+    internal class ExchangeService(IConfiguration configuration) : IExchangeService
     {
-        static readonly HttpClient _client = new HttpClient();
-        private readonly IConfiguration _configuration;
-
-        public ExchangeService(IConfiguration configuration)
-        {
-            _configuration = configuration;
-        }
+        static readonly HttpClient _client = new();
+        private const string baseUrl = "https://api.kucoin.com";
 
         public async Task<IDictionary<string, double>> GetUsdtPairs(string[] codes)
         {
@@ -48,10 +43,9 @@ namespace LukNotificator.Services.Exchange
 
         public async Task<IEnumerable<ExCurInfo>> GetOwnCurrencies()
         {
-            var apiKey = _configuration["kc_api_key"];
-            var apiSecret = _configuration["kc_secret_key"];
-            var apiPassphrase = _configuration["kc_passphrase"];
-            var baseUrl = "https://api.kucoin.com";
+            var apiKey = configuration["kc_api_key"];
+            var apiSecret = configuration["kc_secret_key"];
+            var apiPassphrase = configuration["kc_passphrase"];
 
             var timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
             var method = "GET";
@@ -92,9 +86,83 @@ namespace LukNotificator.Services.Exchange
             return Convert.ToBase64String(hashmessage);
         }
 
-        public Task Sell(string code, double value)
+        public async Task<bool> Sell(string code, double value)
         {
-            return Task.CompletedTask;
+            return await PlaceOrderAsync(code, "sell", value);
+        }
+
+        public async Task<bool> Buy(string code, double value)
+        {
+            return await PlaceOrderAsync(code, "buy", value);
+        }
+
+        private async Task<bool> PlaceOrderAsync(string code, string side, double value)
+        {
+            var endpoint = "/api/v1/orders";
+            var method = "POST";
+
+            var body = side == "sell"
+                ? JsonConvert.SerializeObject(new
+                {
+                    clientOid = Guid.NewGuid().ToString(),
+                    side = side,
+                    symbol = $"{code.ToUpperInvariant()}-USDT",
+                    type = "market",
+                    size = value.ToString(CultureInfo.InvariantCulture)
+                })
+                : JsonConvert.SerializeObject(new
+                {
+                    clientOid = Guid.NewGuid().ToString(),
+                    side = side,
+                    symbol = $"{code.ToUpperInvariant()}-USDT",
+                    type = "market",
+                    funds = value.ToString(CultureInfo.InvariantCulture)
+                });
+
+            var timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
+            var signature = SignRequest(method, endpoint, body, timestamp);
+            var apiKey = configuration["kc_api_key"];
+            var apiPassphrase = configuration["kc_passphrase"];
+            var apiSecret = configuration["kc_secret_key"];
+            var passphrase = SignWithHmacSHA256(apiPassphrase, apiSecret);
+            
+            _client.DefaultRequestHeaders.Clear();
+            _client.DefaultRequestHeaders.Add("KC-API-SIGN", signature);
+            _client.DefaultRequestHeaders.Add("KC-API-TIMESTAMP", timestamp);
+            _client.DefaultRequestHeaders.Add("KC-API-KEY", apiKey);
+            _client.DefaultRequestHeaders.Add("KC-API-PASSPHRASE", passphrase);
+            _client.DefaultRequestHeaders.Add("KC-API-KEY-VERSION", "2");
+
+            var content = new StringContent(body, Encoding.UTF8, "application/json");
+            var response = await _client.PostAsync(baseUrl + endpoint, content);
+            var responseContent = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var error = JsonConvert.DeserializeObject<JObject>(responseContent);
+                throw new Exception($"Error placing order: {error["msg"]}");
+            }
+
+            var responseData = JsonConvert.DeserializeObject<JObject>(responseContent);
+            if (responseData["code"].ToString() == "200000")
+            {
+                return true;
+            }
+
+            throw new Exception($"Error placing order: {responseData["msg"]}");
+        }
+
+        private string SignRequest(string method, string endpoint, string body, string timestamp)
+        {
+            var apiSecret = configuration["kc_secret_key"];
+            var bodyString = body ?? "";
+            var strToSign = timestamp + method.ToUpper() + endpoint + bodyString;
+            var secretBytes = Encoding.UTF8.GetBytes(apiSecret);
+            var signBytes = Encoding.UTF8.GetBytes(strToSign);
+            using var hmac = new HMACSHA256(secretBytes);
+            var hash = hmac.ComputeHash(signBytes);
+
+            return Convert.ToBase64String(hash);
         }
 
     }
