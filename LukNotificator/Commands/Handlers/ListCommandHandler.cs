@@ -8,7 +8,9 @@ using TelegramBotHelper.Services;
 
 namespace LukNotificator.Commands.Handlers
 {
-    internal class ListCommandHandler(IRepository repository, ITelegramBot telegramBot, IExchangeService exService) : IRequestHandler<ListCommand>
+    internal class ListCommandHandler(
+            IUserRepository userRep, ICurrencyRepository curRep, ITelegramBot telegramBot, IExchangeService exService) 
+        : IRequestHandler<ListCommand>
     {
         public class Sort
         {
@@ -18,8 +20,8 @@ namespace LukNotificator.Commands.Handlers
 
         public async Task Handle(ListCommand request, CancellationToken cancellationToken)
         {
-            var user = await repository.GetUser(request.Context.TelegramChannelId);
-            var curs = await repository.GetCurrencies(user);
+            var user = await userRep.GetUser(request.Context.TelegramChannelId);
+            var curs = await curRep.GetCurrencies(user);
             var sb = new StringBuilder();
 
             var curArr = curs.Select(c => c.Code).ToArray();

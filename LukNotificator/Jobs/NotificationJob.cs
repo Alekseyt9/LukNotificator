@@ -7,14 +7,16 @@ using TelegramBotHelper.Services;
 
 namespace LukNotificator.Jobs
 {
-    internal class NotificationJob(IRepository repository, IExchangeService exchangeService, ITelegramBot telegramBot): IJob
+    internal class NotificationJob(
+            ICurrencyRepository curRep, IUserRepository userRep, IExchangeService exchangeService, ITelegramBot telegramBot)
+        : IJob
     {
         public async Task Execute(IJobExecutionContext context)
         {
-            var curs = await repository.GetCurrencies();
+            var curs = await curRep.GetCurrencies();
             var filtCurs = curs.DistinctBy(x => x.Code);
             var priceDict = await exchangeService.GetUsdtPairs(filtCurs.Select(x => x.Code).ToArray());
-            var userMap = (await repository.GetUsers()).ToDictionary(x => x.Id, y => y.ChannelId);
+            var userMap = (await userRep.GetUsers()).ToDictionary(x => x.Id, y => y.ChannelId);
 
             var uGroups = curs.Where(x => !x.IsTriggered).GroupBy(x => x.UserId);
             foreach (var group in uGroups)
@@ -26,7 +28,7 @@ namespace LukNotificator.Jobs
                     if (p > 0.03)
                     {
                         sb.AppendLine($"signal {cur.Code}: {cur.Price} => {priceDict[cur.Code]} raised on {(p * 100).ToString("f3")}% ");
-                        await repository.UpdateCurrency(cur.Id, true);
+                        await curRep.UpdateCurrency(cur.Id, true);
                     }
                 }
 

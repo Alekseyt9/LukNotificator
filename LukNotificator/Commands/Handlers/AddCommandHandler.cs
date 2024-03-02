@@ -5,12 +5,13 @@ using TelegramBotHelper.Services;
 
 namespace LukNotificator.Commands.Handlers
 {
-    internal class AddCommandHandler(IRepository repository, ITelegramBot telegramBot) : IRequestHandler<AddCommand>
+    internal class AddCommandHandler(IUserRepository userRep, ICurrencyRepository curRep, ITelegramBot telegramBot) 
+        : IRequestHandler<AddCommand>
     {
         public async Task Handle(AddCommand request, CancellationToken cancellationToken)
         {
-            var user = await repository.GetOrCreateUser(request.Context.TelegramChannelId);
-            await repository.AddCurrency(user, request.Code, request.Price);
+            var user = await userRep.GetOrCreateUser(request.Context.TelegramChannelId);
+            await curRep.AddCurrency(user, request.Code, request.Price);
             await telegramBot.SendMessage(request.Context.TelegramChannelId,
                 $"currency added {request.Code} {request.Price}");
         }

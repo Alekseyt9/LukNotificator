@@ -8,30 +8,29 @@ namespace LukNotificator.Test
     public class RepositoryTest
     {
         readonly IConfiguration _configuration;
-        readonly IRepository _repository;
+        private readonly IUserRepository _userRep;
 
         public RepositoryTest()
         {
             var builder = new ConfigurationBuilder()
-                //.AddJsonFile($"appsettings.json", false, true);
                 .AddJsonFile("secrets.json", false, true);
 
             _configuration = builder.Build();
             _configuration["pgconnstr"] = $"Server=37.77.105.224; Port=5432; Database=lukbot; User Id=alex; Password={_configuration["pgpass"]};";
-            _repository = new Repository(_configuration);
+            _userRep = new UserRepository(_configuration);
         }
 
         [Fact]
         public async Task Test1()
         {
-            var users = await _repository.GetUsers();
+            var users = await _userRep.GetUsers();
         }
 
         [Fact]
         public async Task Test2()
         {
-            var user = await _repository.GetOrCreateUser(1234);
-            var users = await _repository.GetUsers();
+            var user = await _userRep.GetOrCreateUser(1234);
+            var users = await _userRep.GetUsers();
         }
 
     }

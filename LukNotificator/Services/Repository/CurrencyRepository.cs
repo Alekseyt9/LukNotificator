@@ -1,30 +1,13 @@
-﻿
-using Dapper;
-using LukNotificator.Entity;
-using Microsoft.Extensions.Configuration;
+﻿using LukNotificator.Entity;
 using Npgsql;
-using User = LukNotificator.Entity.User;
+using Dapper;
+using Microsoft.Extensions.Configuration;
 
 namespace LukNotificator.Services
 {
-    internal class Repository(IConfiguration conf) : IRepository
+    internal class CurrencyRepository(IConfiguration conf) : ICurrencyRepository
     {
         private readonly string? _conString = conf["pgconnstr"];
-
-        public async Task<User> GetOrCreateUser(long channelId)
-        {
-            await using var con = new NpgsqlConnection(_conString);
-            con.Open();
-            var user = await con.QueryFirstOrDefaultAsync<User>("select * from public.\"user\" where channelid = @id", new { id = channelId });
-            if (user != null)
-            {
-                return user;
-            }
-            user = new User() { ChannelId = channelId, Id = Guid.NewGuid() };
-            await con.ExecuteAsync("insert into public.\"user\"(id, channelid) values(@id, @channelid)", new {user.Id, user.ChannelId});
-
-            return user;
-        }
 
         public async Task<Currency> AddCurrency(User user, string code, double value)
         {
@@ -32,8 +15,8 @@ namespace LukNotificator.Services
             con.Open();
             var cur = new Currency()
             {
-                Code = code, 
-                UserId = user.Id, 
+                Code = code,
+                UserId = user.Id,
                 Price = value,
                 Id = Guid.NewGuid()
             };
@@ -63,25 +46,6 @@ namespace LukNotificator.Services
             return await con.QueryAsync<Currency>("select * from public.\"currency\"");
         }
 
-        public Task<User> GetUser(Guid id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<User> GetUser(long chanId)
-        {
-            await using var con = new NpgsqlConnection(_conString);
-            con.Open();
-            return await con.QueryFirstAsync<User>("select * from public.\"user\" where channelid = @channelid", new { channelid = chanId });
-        }
-
-        public async Task<IEnumerable<User>> GetUsers()
-        {
-            await using var con = new NpgsqlConnection(_conString);
-            con.Open();
-            return await con.QueryAsync<User>("select * from public.\"user\"");
-        }
-
         public async Task UpdateCurrency(Guid curId, bool isTriggered)
         {
             await using var con = new NpgsqlConnection(_conString);
@@ -89,6 +53,5 @@ namespace LukNotificator.Services
             await con.ExecuteAsync("update public.\"currency\" set istriggered = @istriggered where id = @id",
                 new { id = curId, istriggered = isTriggered });
         }
-
     }
 }

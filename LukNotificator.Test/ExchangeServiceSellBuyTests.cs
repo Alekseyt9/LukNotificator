@@ -6,7 +6,7 @@ namespace LukNotificator.Test
 {
     public class ExchangeServiceSellBuyTests
     {
-        private IConfiguration _configuration { get; set; }
+        private IConfiguration _configuration { get; }
 
         public ExchangeServiceSellBuyTests()
         {

@@ -7,7 +7,7 @@ namespace LukNotificator.Test
 {
     public class ExchangeServiceTests
     {
-        private IConfiguration _configuration { get; set; }
+        private IConfiguration _configuration { get; }
 
         public ExchangeServiceTests()
         {
