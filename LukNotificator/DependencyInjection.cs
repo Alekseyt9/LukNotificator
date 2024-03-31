@@ -1,6 +1,7 @@
 ﻿
 using LukNotificator.Services;
 using LukNotificator.Services.Exchange;
+using LukNotificator.Services.Exchange.Impl;
 using LukNotificator.Services.Repository;
 using Microsoft.Extensions.DependencyInjection;
 using TelegramBotHelper.Commands;
@@ -17,7 +18,7 @@ namespace TelegramBotHelper
                 .AddSingleton<INotificationTaskManager, NotificationTaskManager>()
                 .AddSingleton<IUserRepository, UserRepository>()
                 .AddSingleton<ICurrencyRepository, CurrencyRepository>()
-                .AddSingleton<IExchangeService, ExchangeService>()
+                .AddSingleton<IExchangeService, BybitExchangeService>()
                 .AddSingleton<IOwnCurRepository, OwnCurRepository>()
                 ;
 

@@ -5,9 +5,9 @@ using System.Text;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
-namespace LukNotificator.Services.Exchange
+namespace LukNotificator.Services.Exchange.Impl
 {
-    internal class ExchangeService(IConfiguration configuration) : IExchangeService
+    internal class KukoinExchangeService(IConfiguration configuration) : IExchangeService
     {
         static readonly HttpClient _client = new();
         private const string baseUrl = "https://api.kucoin.com";
@@ -105,7 +105,7 @@ namespace LukNotificator.Services.Exchange
                 ? JsonConvert.SerializeObject(new
                 {
                     clientOid = Guid.NewGuid().ToString(),
-                    side = side,
+                    side,
                     symbol = $"{code.ToUpperInvariant()}-USDT",
                     type = "market",
                     size = value.ToString(CultureInfo.InvariantCulture)
@@ -113,7 +113,7 @@ namespace LukNotificator.Services.Exchange
                 : JsonConvert.SerializeObject(new
                 {
                     clientOid = Guid.NewGuid().ToString(),
-                    side = side,
+                    side,
                     symbol = $"{code.ToUpperInvariant()}-USDT",
                     type = "market",
                     funds = value.ToString(CultureInfo.InvariantCulture)
@@ -125,7 +125,7 @@ namespace LukNotificator.Services.Exchange
             var apiPassphrase = configuration["kc_passphrase"];
             var apiSecret = configuration["kc_secret_key"];
             var passphrase = SignWithHmacSHA256(apiPassphrase, apiSecret);
-            
+
             _client.DefaultRequestHeaders.Clear();
             _client.DefaultRequestHeaders.Add("KC-API-SIGN", signature);
             _client.DefaultRequestHeaders.Add("KC-API-TIMESTAMP", timestamp);
